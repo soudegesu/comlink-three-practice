@@ -18,6 +18,8 @@ import {
 } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
+console.log('VRMCanvasWoker created');
+
 export class VRMCanvas {
   private _id: number;
   private _canvas: OffscreenCanvas;

@@ -5,7 +5,10 @@ interface WorkerState {
   workerService?: WorkerService;
 }
 
-export const WorkerServiceContext = createContext<WorkerState>({} as WorkerState);
+// 専用ワーカーの数が増えないようにするため、initStateを共有する
+const initalState = { workerService: new WorkerService() };
+
+const WorkerServiceContext = createContext<WorkerState>(initalState);
 
 export function useWorkerService() {
   return useContext(WorkerServiceContext);
@@ -16,11 +19,7 @@ interface Props {
 }
 
 const WorkerProvider: FC<Props> = ({ children }) => {
-  return (
-    <WorkerServiceContext.Provider value={{ workerService: new WorkerService() }}>
-      {children}
-    </WorkerServiceContext.Provider>
-  );
+  return <WorkerServiceContext.Provider value={initalState}>{children}</WorkerServiceContext.Provider>;
 };
 
 export default WorkerProvider;
