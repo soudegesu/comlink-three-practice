@@ -1,0 +1,5 @@
+{
+  "*.{js,jsx,ts,tsx}": ["eslint --fix --ignore-path .eslintignore src --no-error-on-unmatched-pattern"],
+  "*.{css,scss}": ["prettier --write"],
+  "*.{json,yaml,yml,md}": ["prettier --write"]
+}
