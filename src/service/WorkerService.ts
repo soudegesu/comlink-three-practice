@@ -6,9 +6,11 @@ export type ActionType = 'angry';
 
 export class WorkerService {
   private _worker: Worker;
+  private _endpoint: any;
 
   constructor() {
-    this._worker = new Worker();
+    const worker = new Worker();
+    this._worker = worker;
   }
 
   async addCanvas(canvas: OffscreenCanvas, id: number, url: string) {
