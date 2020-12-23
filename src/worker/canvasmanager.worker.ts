@@ -3,8 +3,10 @@ const canvasIds = [] as number[];
 import Worker from 'comlink-loader!../worker/vrmcanvas.worker';
 import { transfer } from 'comlink';
 import { Clock } from 'three';
+import Stats from 'three/examples/jsm/libs/stats.module';
 
 let rafId = 0;
+let statsRef: Stats;
 const canvasWorkers = [] as any[];
 const clock = new Clock(true);
 
@@ -19,13 +21,20 @@ export async function addCanvas({ canvas, id, url }: { canvas: OffscreenCanvas; 
   canvasWorkers.push(canvasWorker);
 }
 
+export async function startDraw(stats: Stats) {
+  statsRef = stats;
+  statsRef.begin();
+  draw();
+  statsRef.end();
+}
+
 export async function draw() {
   const delta = clock.getDelta();
 
   canvasWorkers.forEach((worker) => {
     worker.draw(delta);
   });
-
+  if (statsRef) statsRef.update();
   rafId = requestAnimationFrame(draw);
 }
 

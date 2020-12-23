@@ -1,6 +1,6 @@
 // @ts-ignore
 import Worker from 'comlink-loader!../worker/canvasmanager.worker';
-import { transfer } from 'comlink';
+import { transfer, proxy } from 'comlink';
 import Stats from 'three/examples/jsm/libs/stats.module';
 
 export type ActionType = 'angry';
@@ -28,9 +28,7 @@ export class WorkerService {
   }
 
   async draw() {
-    this._stats.begin();
-    await this._worker.draw();
-    this._stats.end();
+    await this._worker.startDraw(proxy(this._stats));
   }
 
   getStats() {
