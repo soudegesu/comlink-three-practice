@@ -4,6 +4,8 @@ import {
   AnimationClip,
   AnimationMixer,
   Camera,
+  Color,
+  DirectionalLight,
   Euler,
   LoopOnce,
   NumberKeyframeTrack,
@@ -16,21 +18,34 @@ import {
 } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-export class VRMCanvasWorker {
+export class VRMCanvas {
+  private _id: number;
+  private _canvas: OffscreenCanvas;
+  private _scene: Scene;
   private _renderer: WebGLRenderer;
+  private _camera: Camera;
+  private _light: DirectionalLight;
   private _vrm?: VRM;
-  private _camera?: Camera;
-  private _scene?: Scene;
   private _mixer?: AnimationMixer;
   private _armAction?: AnimationAction;
   private _angryAction?: AnimationAction;
 
-  constructor({ renderer }: { renderer: WebGLRenderer }) {
-    this._renderer = renderer;
+  constructor({ id, canvas, url }: { id: number; canvas: OffscreenCanvas; url: string }) {
+    this._id = id;
+    this._canvas = canvas;
+    const context = canvas.getContext('webgl') as WebGLRenderingContext;
+    this._renderer = new WebGLRenderer({ canvas, context });
     this._camera = new PerspectiveCamera(50, 4.0 / 3.0, 0.4, 1.0);
+    this._scene = new Scene();
+    this._light = new DirectionalLight(new Color('#ffffff'), 0.8);
+    this._light.position.set(1, 1, 1).normalize();
+    this._scene.add(this._light);
+    (async () => {
+      await this.loadVrm(url);
+    })();
   }
 
-  async loadVrn(url: string) {
+  async loadVrm(url: string) {
     const gltf = (await new GLTFLoader().loadAsync(url, () => {})) as GLTF;
     VRMUtils.removeUnnecessaryJoints(gltf.scene);
     const vrm = await VRM.from(gltf);
@@ -59,12 +74,8 @@ export class VRMCanvasWorker {
     this._armAction = armAction;
     this._mixer = mixer;
     this._vrm = vrm;
-  }
+    this._scene.add(vrm.scene);
 
-  initVrmAvatar() {
-    if (!this._vrm || !this._camera) {
-      return;
-    }
     // 首の位置を基準にする
     const neck = this._vrm.humanoid?.getBoneNode(VRMSchema.HumanoidBoneName.Neck);
     if (neck) {

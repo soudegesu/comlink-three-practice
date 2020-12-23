@@ -1,15 +1,14 @@
-import React, { createContext, FC, useContext, useEffect } from 'react';
-// @ts-ignore
-import CanvasManager from 'comlink-loader!./worker/canvasmanager.worker';
+import React, { createContext, FC, useContext } from 'react';
+import { WorkerService } from '../service/WorkerService';
 
 interface WorkerState {
-  worker?: Worker;
+  workerService?: WorkerService;
 }
 
-export const WorkerStateContext = createContext<WorkerState>({} as WorkerState);
+export const WorkerServiceContext = createContext<WorkerState>({} as WorkerState);
 
-export function useWorkerState() {
-  return useContext(WorkerStateContext);
+export function useWorkerService() {
+  return useContext(WorkerServiceContext);
 }
 
 interface Props {
@@ -17,13 +16,11 @@ interface Props {
 }
 
 const WorkerProvider: FC<Props> = ({ children }) => {
-  useEffect(() => {
-    (async () => {
-      const manager = new CanvasManager();
-    })();
-  }, []);
-
-  return <WorkerStateContext.Provider value={{ worker: undefined }}>{children}</WorkerStateContext.Provider>;
+  return (
+    <WorkerServiceContext.Provider value={{ workerService: new WorkerService() }}>
+      {children}
+    </WorkerServiceContext.Provider>
+  );
 };
 
 export default WorkerProvider;
