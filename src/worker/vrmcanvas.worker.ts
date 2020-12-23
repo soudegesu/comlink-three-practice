@@ -35,7 +35,7 @@ export class VRMCanvas {
   constructor({ id, canvas, url }: { id: number; canvas: OffscreenCanvas; url: string }) {
     this._id = id;
     this._canvas = canvas;
-    const context = canvas.getContext('webgl') as WebGLRenderingContext;
+    const context = canvas.getContext('webgl2') as WebGL2RenderingContext;
     this._renderer = new WebGLRenderer({ canvas, context });
     this._camera = new PerspectiveCamera(50, 4.0 / 3.0, 0.4, 1.0);
     this._scene = new Scene();
