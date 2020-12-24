@@ -31,9 +31,8 @@ export async function startDraw(stats: Stats) {
 export async function draw() {
   const delta = clock.getDelta();
 
-  canvasWorkers.forEach((worker) => {
-    worker.draw(delta);
-  });
+  await Promise.all(canvasWorkers.map(async (worker) => await worker.draw(delta)));
+
   if (statsRef) statsRef.update();
   rafId = requestAnimationFrame(draw);
 }
