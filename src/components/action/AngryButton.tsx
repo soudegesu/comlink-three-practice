@@ -1,15 +1,15 @@
 import { Button } from '@material-ui/core';
 import React, { FC } from 'react';
-import { useCanvasState } from '../../provider/CanvasProvider';
+// import { useCanvasState } from '../../provider/CanvasProvider';
 import { useWorkerService } from '../../provider/WorkerProvider';
 
 const AngryButton: FC = () => {
-  const { canvasId } = useCanvasState();
+  // const { canvasId } = useCanvasState();
   const { workerService } = useWorkerService();
 
   const handleOnClick = () => {
     if (workerService) {
-      workerService.takeAction(canvasId, 'angry');
+      workerService.takeAction();
     }
   };
 

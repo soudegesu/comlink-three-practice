@@ -20,7 +20,7 @@ export class WorkerService {
     await this._worker.addCanvas(transfer({ canvas, id, url }, [canvas]));
   }
 
-  async takeAction(id: number, action: ActionType) {
+  async takeAction() {
     // angryAction.play();
     // setTimeout(() => {
     //   angryAction.stop();
